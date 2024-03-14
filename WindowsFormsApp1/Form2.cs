@@ -19,10 +19,10 @@ namespace WindowsFormsApp1
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string connectionString = "provider=Microsoft.Jet.OLEDB.4.0;Data Source=Database.mbd";
+            string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\user\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\Database.accdb;Persist Security Info=False;";
             OleDbConnection dbConnection = new OleDbConnection(connectionString);
             dbConnection.Open();
-            string query = "SELECT * FROM table_name";
+            string query = "SELECT * FROM User";
             OleDbCommand dbCommand = new OleDbCommand(query, dbConnection);
             OleDbDataReader dbReader = dbCommand.ExecuteReader();
 
@@ -58,10 +58,10 @@ namespace WindowsFormsApp1
             string password = dataGridView1.Rows[index].Cells[2].Value.ToString();
             string mail = dataGridView1.Rows[index].Cells[3].Value.ToString();
 
-            string connectionString = "provider=Microsoft.Jet.OLEDB.4.0;Data Source=Database.mbd";
+            string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\user\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\Database.accdb;Persist Security Info=False;";
             OleDbConnection dbConnection = new OleDbConnection(connectionString);
             dbConnection.Open();
-            string query = "INSERT INTO table_name VALUES (" + id + ", '" + login + "', '" + password + "', '" + mail + "'\")";
+            string query = "INSERT INTO User VALUES (" + id + ", '" + login + "', '" + password + "', '" + mail + "'\")";
             OleDbCommand dbCommand = new OleDbCommand(query, dbConnection);
             if (dbCommand.ExecuteNonQuery() != 1)
                 MessageBox.Show("Ошибка запроса", "Ошибка");
@@ -92,10 +92,10 @@ namespace WindowsFormsApp1
             string password = dataGridView1.Rows[index].Cells[2].Value.ToString();
             string mail = dataGridView1.Rows[index].Cells[3].Value.ToString();
 
-            string connectionString = "provider=Microsoft.Jet.OLEDB.4.0;Data Source=Database.mbd";
+            string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\user\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\Database.accdb;Persist Security Info=False;";
             OleDbConnection dbConnection = new OleDbConnection(connectionString);
             dbConnection.Open();
-            string query = "UPDATE table_name SET Login = '" + login + "',Password = '" + password + "',Mail = '" + mail + "' WHERE id = " + id;
+            string query = "UPDATE User SET Login = '" + login + "',Password = '" + password + "',Mail = '" + mail + "' WHERE id = " + id;
             OleDbCommand dbCommand = new OleDbCommand(query, dbConnection);
             if (dbCommand.ExecuteNonQuery() != 1)
                 MessageBox.Show("Ошибка запроса", "Ошибка");
@@ -121,10 +121,10 @@ namespace WindowsFormsApp1
             }
             string id = dataGridView1.Rows[index].Cells[0].Value.ToString();
 
-            string connectionString = "provider=Microsoft.Jet.OLEDB.4.0;Data Source=Database.mbd";
+            string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\user\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\Database.accdb;Persist Security Info=False;";
             OleDbConnection dbConnection = new OleDbConnection(connectionString);
             dbConnection.Open();
-            string query = "DELETE FROM table_name WHERE id = " + id;
+            string query = "DELETE FROM User WHERE id = " + id;
             OleDbCommand dbCommand = new OleDbCommand(query, dbConnection);
             if (dbCommand.ExecuteNonQuery() != 1)
                 MessageBox.Show("Ошибка запроса", "Ошибка");

@@ -22,6 +22,7 @@ namespace WindowsFormsApp1
             trackBar1.Scroll += trackBar1_Scroll;
         }
         Form f2;
+        Form f3;
         private void InitializeButtons()
         {
             button1.Click += button_Click;
@@ -88,35 +89,95 @@ namespace WindowsFormsApp1
                     }
                 }
             }
+
             if (groupBox == groupBox2 && clickedButton == button2)
             {
                 string login = textBox3.Text;
                 string password = textBox4.Text;
-                string email = textBox5.Text;
+                string mail = textBox5.Text;
 
-                string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=Database.mdb";
-                using (OleDbConnection connection = new OleDbConnection(connectionString))
+                string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\user\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\Database.accdb;Persist Security Info=False;";
+
+                using (OleDbConnection dbConnection = new OleDbConnection(connectionString))
                 {
-                    connection.Open();
-                    string query = "INSERT INTO table_name (Login, Password, Email) VALUES (?, ?, ?)";
-                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    dbConnection.Open();
+                    string query = "SELECT COUNT(*) FROM User WHERE login = ? OR mail = ?";
+                    using (OleDbCommand dbCommand = new OleDbCommand(query, dbConnection))
                     {
-                        command.Parameters.AddWithValue("@p1", login);
-                        command.Parameters.AddWithValue("@p2", password);
-                        command.Parameters.AddWithValue("@p3", email);
-                        command.ExecuteNonQuery();
+                        dbCommand.Parameters.AddWithValue("@login", login);
+                        dbCommand.Parameters.AddWithValue("@mail", mail);
+                        int count = (int)dbCommand.ExecuteScalar();
+
+                        if (count > 0)
+                        {
+                            MessageBox.Show("Пользователь с таким логином или адресом почты уже существует!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return; 
+                        }
+                    }
+
+               
+                    query = "INSERT INTO [User] (login, password, mail) VALUES (?, ?, ?)";
+                    using (OleDbCommand dbCommand = new OleDbCommand(query, dbConnection))
+                    {
+                        dbCommand.Parameters.AddWithValue("@login", login);
+                        dbCommand.Parameters.AddWithValue("@password", password);
+                        dbCommand.Parameters.AddWithValue("@mail", mail);
+                        dbCommand.ExecuteNonQuery();
+                    }
+                }
+                MessageBox.Show("Успешная регистрация! Можете авторизироваться. Приятной игры!", "Уведомление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+            if (groupBox == groupBox1 && clickedButton == button1)
+            {
+                string login = textBox1.Text;
+                string password = textBox2.Text;
+                string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\user\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\Database.accdb;Persist Security Info=False;";
+
+                using (OleDbConnection dbConnection = new OleDbConnection(connectionString))
+                {
+                    dbConnection.Open();
+               
+                    string query = "SELECT COUNT(*) FROM [User] WHERE [login] = ? AND [password] = ?";
+                    using (OleDbCommand dbCommand = new OleDbCommand(query, dbConnection))
+                    {
+                        dbCommand.Parameters.AddWithValue("@login", login);
+                        dbCommand.Parameters.AddWithValue("@password", password);
+                        int count = (int)dbCommand.ExecuteScalar();
+
+                        if (count > 0)
+                        {
+                            MessageBox.Show("Успешная авторизация!", "Уведомление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            f3 = new Form3();
+                            f3.Owner = this;
+                            f3.Show();
+                            this.Hide();
+                        }
+                        else if (login == "admin" && password == "admin")
+                        {
+                            f2 = new Form2();
+                            f2.Owner = this;
+                            f2.Show();
+                            this.Hide();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Неправильный логин или пароль!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
             }
+
             if (textBox1.Text == "admin" && textBox2.Text == "admin")
             {
                 f2 = new Form2();
-                f2.Owner = this; 
+                f2.Owner = this;
                 f2.Show();
                 this.Hide();
             }
         }
-                private bool IsValidEmail(string email)
+
+        private bool IsValidEmail(string email)
         {
             string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
             Regex regex = new Regex(pattern);
